@@ -63,7 +63,7 @@
 
 ;; If windows starts giving errors about elpy/python, it may be because the default
 ;; language environment is not set correctly.  Try this
-;;(set-language-environment "UTF-8")
+;; (set-language-environment "UTF-8")
 
 ;; set virtualenv upon loading a python file (or aupon changing buffers
 (venv-initialize-interactive-shells) ;; if you want interactive shell support
@@ -71,16 +71,35 @@
 ;; note that setting `venv-location` is not necessary if you
 ;; use the default location (`~/.virtualenvs`), or if the
 ;; the environment variable `WORKON_HOME` points to the right place
-(setq venv-location "c:/Users/Dr Wiggle/.virtualenvs/")
+;; (setq venv-location "c:/Users/Dr Wiggle/.virtualenvs/")
 
 ;; Enable python-mode on python files
+(setq elpy-rpc-virtualenv-path 'current)
+(setq elpy-rpc-python-command "python")
 (elpy-enable)
-(setq elpy-rpc-python-command "python3")
 
 ;; Enable Flycheck
 (when (require 'flycheck nil t)
   (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
   (add-hook 'elpy-mode-hook 'flycheck-mode))
+
+;; By default, Flycheck will try to use the incorrect python installation
+;; This can be "fixed" by changing a single variable, but then flycheck
+;; won't operate correctly with the virtualenvironment.  This fixes that
+(setq flycheck-python-pycompile-executable "python")
+;;(defun set-flychecker-executables ()
+;;  "Configure virtualenv for pycompile, flake8, and lint."
+;;  (when (get-current-buffer-pycompile)
+;;    (flycheck-set-checker-executable (quote python-pycompile)
+;;                                     (get-current-buffer-pycompile)))
+;;  (when (get-current-buffer-flake8)
+;;    (flycheck-set-checker-executable (quote python-flake8)
+;;                                     (get-current-buffer-flake8)))
+;;  (when (get-current-buffer-pylint)
+;;    (flycheck-set-checker-executable (quote python-pylint)
+;;                                     (get-current-buffer-pylint))))
+;;(add-hook 'flycheck-before-syntax-check-hook
+;;          #'set-flychecker-executables 'local)
 
 ;; Enable autopep8
 (require 'py-autopep8)

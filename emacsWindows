@@ -35,6 +35,7 @@
     magit                           ;; Git Integration
     virtualenvwrapper               ;; virtual environment management
     material-theme                  ;; Dark theme
+    markdown-mode                   ;; supports markdown document creation
     )
   )
 
@@ -46,8 +47,24 @@
       myPackages)
 
 ;; ===================================
+;; Eshell Customization
+;; ===================================
+
+(setq eshell-prompt-regexp "^[^#$\n]*[#$] "
+      eshell-prompt-function
+      (lambda nil
+        (concat
+	 "[" (user-login-name) "@" (system-name) " "
+	 (if (string= (eshell/pwd) (getenv "HOME"))
+	     "~" (eshell/basename (eshell/pwd)))
+	 "]"
+	 (if (= (user-uid) 0) "# " "$ "))))
+
+;; ===================================
 ;; Basic Customization
 ;; ===================================
+
+
 
 (load-theme 'material t)             ;; Load dark theme!
 (global-linum-mode t)                ;; Global line numbers
@@ -87,6 +104,9 @@
 ;; This can be "fixed" by changing a single variable, but then flycheck
 ;; won't operate correctly with the virtualenvironment.  This fixes that
 (setq flycheck-python-pycompile-executable "python")
+(setq flycheck-python-flake8-executable "python")
+(setq elpy-rpc-backend "jedi")
+
 ;;(defun set-flychecker-executables ()
 ;;  "Configure virtualenv for pycompile, flake8, and lint."
 ;;  (when (get-current-buffer-pycompile)
@@ -133,7 +153,7 @@
 
 ;; Turns on word-wrapping and causes C-k, C-a, C-e to operate w.r.t
 ;; visual lines rather than actual lines.
-(add-hook 'LaTeX-mode-hook 'visual-line-mode)
+(add-hook 'LaTeX-modep-hook 'visual-line-mode)
 (add-hook 'LaTeX-mode-hook 'flyspell-mode)
 (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
 
